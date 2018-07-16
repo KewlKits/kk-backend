@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose.Schema;
 
 const songSchema = new Schema({
   uri: String,
@@ -7,7 +8,7 @@ const songSchema = new Schema({
   title: String,
   artist: String,
   album: String,
-  albumArtUrl: String
+  albumArtUrl: String,
 });
 
 const partySchema = new Schema({
@@ -15,7 +16,7 @@ const partySchema = new Schema({
   location: [Number],
   createdAt: Date,
   pool: [songSchema],
-  queue: [songSchema]
+  queue: [songSchema],
 });
 
 module.exports = mongoose.model('Party', partySchema);
