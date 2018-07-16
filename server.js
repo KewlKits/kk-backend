@@ -17,6 +17,14 @@ router.get('/', (req, res) => {
 });
 
 router.route('/party')
+  .get((req, res) => {
+    Party.find((err, parties) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(parties);
+    });
+  })
   .post((req, res) => {
     const party = new Party();
     party.name = req.body.name;
