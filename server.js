@@ -95,6 +95,23 @@ router.route('/party/:party_id/pool/remove')
     });
   });
 
+router.route('/party/:party_id/pool/:song_id')
+  .put((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.moveSongToQueue(req.params.song_id);
+
+      party.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        res.status(200).json(party);
+      });
+    });
+  });
+
 router.route('/party/:party_id/queue/add')
   .put((req, res) => {
     Party.findById(req.params.party_id, (err, party) => {

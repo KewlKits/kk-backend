@@ -49,9 +49,13 @@ partySchema.methods.addSongToQueue = function (uri, title, artist, album, albumA
   }
 };
 
-partySchema.methods.removeSongFromQueue = function (songIdString) {
-  this.queue.remove(songIdString);
+partySchema.methods.removeSongFromQueue = function (songId) {
+  this.queue.remove(songId);
 };
 
+partySchema.methods.moveSongToQueue = function (songId) {
+  this.queue.push(this.pool[this.pool.map(song => song._id.toString()).indexOf(songId)]);
+  this.pool.remove(songId);
+};
 
 module.exports = mongoose.model('Party', partySchema);
