@@ -17,6 +17,24 @@ const partySchema = new mongoose.Schema({
   createdAt: Date,
 });
 
+partySchema.methods.addSongToPool = function (uri, title, artist, album, albumArtUrl) {
+  // Only add if unique
+  if (!this.queue.map(song => song.uri).includes(uri)) {
+    this.pool.push({
+      uri,
+      title,
+      artist,
+      album,
+      albumArtUrl,
+      createdAt: new Date(),
+    });
+  }
+};
+
+partySchema.methods.removeSongFromPool = function (songId) {
+  this.pool.remove(songId);
+};
+
 partySchema.methods.addSongToQueue = function (uri, title, artist, album, albumArtUrl) {
   // Only add if unique
   if (!this.queue.map(song => song.uri).includes(uri)) {
