@@ -148,6 +148,23 @@ router.route('/party/:party_id/queue/remove')
     });
   });
 
+router.route('/party/:party_id/queue/move')
+  .put((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.moveSongInQueue(req.body.index, req.body.target);
+
+      party.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        res.status(200).json(party);
+      });
+    });
+  });
+
 app.use('/', router);
 
 app.listen(process.env.PORT);

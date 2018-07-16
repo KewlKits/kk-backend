@@ -58,4 +58,8 @@ partySchema.methods.moveSongToQueue = function (songId) {
   this.pool.remove(songId);
 };
 
+partySchema.methods.moveSongInQueue = function (index, target) {
+  this.queue.splice(target, 0, this.queue.splice(index, 1)[0]);
+};
+
 module.exports = mongoose.model('Party', partySchema);
