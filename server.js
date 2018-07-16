@@ -24,7 +24,7 @@ router.route('/party')
     party.save((err) => {
       if(err) {
         console.log('Party not saved');
-        res.status(400).json(error: err);
+        res.status(400).json({error: err});
       }
       res.status(200).json(party);
     })
