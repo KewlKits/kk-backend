@@ -1,4 +1,4 @@
-const Party = require('models/party');
+const Party = require('./models/party');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
