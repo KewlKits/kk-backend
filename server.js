@@ -12,19 +12,18 @@ mongoose.connect(process.env.MONGODB_URI);
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.json({message: "working"});
+  res.json({message: "online"});
 });
 
 router.route('/party')
   .post((req, res) => {
     const party = Party();
     party.name = req.body.name;
-    party.location = [0, 0];
+    party.location = [req.body.longitude, req.body.latitude];
     party.createdAt = new Date();
 
     party.save((err) => {
       if(err) {
-        console.log('Party not saved');
         res.status(400).json({error: err});
       }
       res.status(200).json(party);
