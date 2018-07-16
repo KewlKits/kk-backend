@@ -19,7 +19,7 @@ const partySchema = new mongoose.Schema({
 
 partySchema.methods.addSongToPool = function (uri, title, artist, album, albumArtUrl) {
   // Only add if unique
-  if (!this.queue.map(song => song.uri).includes(uri)) {
+  if (!this.pool.map(song => song.uri).includes(uri)) {
     this.pool.push({
       uri,
       title,
