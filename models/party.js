@@ -32,7 +32,7 @@ partySchema.methods.addSongToQueue = function (uri, title, artist, album, albumA
 };
 
 partySchema.methods.removeSongFromQueue = function (songIdString) {
-  this.queue.remove(mongoose.Types.ObjectId(songIdString));
+  this.queue.remove(songIdString);
 };
 
 
