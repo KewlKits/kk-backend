@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 
 router.route('/party')
   .post((req, res) => {
-    const party = Party();
+    const party = new Party();
     party.name = req.body.name;
     party.location = [req.body.longitude, req.body.latitude];
     party.createdAt = new Date();
@@ -48,6 +48,25 @@ router.route('/party/:party_id')
         res.status(400).json({ error: err });
       }
       res.status(200).json(party);
+    });
+  });
+
+router.route('/party/:party_id/queue/add')
+  .put((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.addSongToQueue(
+        req.body.uri, req.body.title, req.body.artist, req.body.album, req.body.albumArtUrl,
+      );
+
+      party.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        res.status(200).json(party);
+      });
     });
   });
 
