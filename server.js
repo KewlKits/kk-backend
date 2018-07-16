@@ -13,7 +13,7 @@ mongoose.connect(process.env.MONGODB_URI);
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.json({ message: 'online' });
+  res.status(200).json({ message: 'online' });
 });
 
 router.route('/party')
@@ -24,6 +24,26 @@ router.route('/party')
     party.createdAt = new Date();
 
     party.save((err) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(party);
+    });
+  });
+
+router.route('/party/:party_id')
+  .get((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(party);
+    });
+  })
+  .delete((req, res) => {
+    Party.remove({
+      _id: req.params.party_id,
+    }, (err, party) => {
       if (err) {
         res.status(400).json({ error: err });
       }
