@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose.Schema;
-
-const songSchema = new Schema({
+const songSchema = new mongoose.Schema({
   uri: String,
   createdAt: Date,
   title: String,
@@ -11,7 +9,7 @@ const songSchema = new Schema({
   albumArtUrl: String,
 });
 
-const partySchema = new Schema({
+const partySchema = new mongoose.Schema({
   name: String,
   location: [Number],
   createdAt: Date,
