@@ -7,7 +7,7 @@ const songSchema = new Schema({
   title: String,
   artist: String,
   album: String,
-  albumArtUrl: String.
+  albumArtUrl: String
 });
 
 const partySchema = new Schema({
@@ -15,7 +15,7 @@ const partySchema = new Schema({
   location: [Number],
   createdAt: Date,
   pool: [songSchema],
-  queue: [songSchema],
+  queue: [songSchema]
 });
 
 module.exports = mongoose.model('Party', partySchema);
