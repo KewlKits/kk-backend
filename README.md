@@ -1,6 +1,7 @@
 # kk-backend
 
 ## Overview
+Backend rooted at https://kk-backend.herokuapp.com for KewKits to be named collaborative DJing app.
 
 ## Models
 
@@ -27,17 +28,18 @@
 
 
 ## Routes
-| Method | Endpoint                      | Usage                        | Returns |
-| ------ | ----------------------------- | ---------------------------- | ------- |
-| GET    | /party                        | get all parties              | Party[] |
-| POST   | /party                        | create a new party           | Party   |
-| GET    | /party/{partyId}              | get a party by id            | Party   |
-| DELETE | /party/{partyId}              | delete a party by id         | Party   |
-| PUT    | /party/{partyId}/pool/add     | add a song to the pool       | Party   |
-| PUT    | /party/{partyId}/pool/remove  | remove a song from the pool  | Party   |
-| PUT    | /party/{partyId}/queue/add    | add a song to the queue      | Party   |
-| PUT    | /party/{partyId}/queue/remove | remove a song from the queue | Party   |
-| PUT    | /party/{partyId}/queue/move   | move a song within the queue | Party   |
+| Method | Endpoint                      | Usage                          | Returns |
+| ------ | ----------------------------- | ------------------------------ | ------- |
+| GET    | /party                        | get all parties                | Party[] |
+| POST   | /party                        | create a new party             | Party   |
+| GET    | /party/{partyId}              | get a party by id              | Party   |
+| DELETE | /party/{partyId}              | delete a party by id           | Party   |
+| PUT    | /party/{partyId}/pool/add     | add a song to the pool         | Party   |
+| PUT    | /party/{partyId}/pool/remove  | remove a song from the pool    | Party   |
+| PUT    | /party/{partyId}/pool         | move a song from pool to queue | Party   |
+| PUT    | /party/{partyId}/queue/add    | add a song to the queue        | Party   |
+| PUT    | /party/{partyId}/queue/remove | remove a song from the queue   | Party   |
+| PUT    | /party/{partyId}/queue/move   | move a song within the queue   | Party   |
 
 ### Get All Parties
 #### Endpoint
@@ -92,3 +94,44 @@ PUT /party/{partyId}/pool/remove
 | Header Field | Value             |
 | ------------ | ----------------- |
 | song_id      | id of song object |
+
+### Move a Song from Pool to Queue
+#### Endpoint
+PUT /party/{partyId}/pool/
+
+#### Header Fields
+| Header Field | Value             |
+| ------------ | ----------------- |
+| song_id      | id of song object |
+
+### Add to Queue
+#### Endpoint
+PUT /party/{partyId}/queue/add
+
+#### Header Fields
+| Header Field  | Value                     |
+| ------------- | ------------------------- |
+| uri           | Spotify URI               |
+| title         | track title               |
+| artist        | track artist              |
+| album         | track album               |
+| albumArtURL   | Spotify URL for album art |
+
+### Remove from Queue
+#### Endpoint
+PUT /party/{partyId}/queue/remove
+
+#### Header Fields
+| Header Field | Value             |
+| ------------ | ----------------- |
+| song_id      | id of song object |
+
+### Move a Song within the Queue
+#### Endpoint
+PUT /party/{partyId}/queue/move
+
+#### Header Fields
+| Header Field  | Value                     |
+| ------------- | ------------------------- |
+| index         | index of song to be moved |
+| target        | target index to move to   |
