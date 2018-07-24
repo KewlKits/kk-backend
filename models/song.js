@@ -28,6 +28,7 @@ songSchema.methods.removeUpvote = function (userId) {
 
 songSchema.methods.addDownvote = function (userId) {
   console.log('Downvoting');
+  console.log(this.downvotedBy);
   this.downvotedBy.push(userId);
   if (this.upvotedBy.includes(mongoose.Types.ObjectId(userId))) {
     console.log('Removing upvote');
