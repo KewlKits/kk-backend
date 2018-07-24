@@ -39,7 +39,18 @@ router.route('/party')
       if (err) {
         res.status(400).json({ error: err });
       }
-      res.status(200).json(party);
+      User.findById(req.body.owner, (userFindErr, user) => {
+        if (userFindErr) {
+          res.status(400).json({ error: userFindErr });
+        }
+        user.addParty(party._id);
+        user.save((userSaveErr) => {
+          if (userSaveErr) {
+            res.status(400).json({ error: userSaveErr });
+          }
+          res.status(200).json(party);
+        });
+      });
     });
   });
 
@@ -88,7 +99,18 @@ router.route('/party/:party_id/pool/add')
           if (saveErr) {
             res.status(400).json({ error: saveErr });
           }
-          res.status(200).json(party);
+          User.findById(req.body.owner, (userFindErr, user) => {
+            if (userFindErr) {
+              res.status(400).json({ error: userFindErr });
+            }
+            user.addSong(song._id);
+            user.save((userSaveErr) => {
+              if (userSaveErr) {
+                res.status(400).json({ error: userSaveErr });
+              }
+              res.status(200).json(party);
+            });
+          });
         });
       });
     });
