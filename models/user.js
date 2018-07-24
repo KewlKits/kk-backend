@@ -4,10 +4,10 @@ const userSchema = new mongoose.Schema({
   name: String,
   score: Number,
 
-  parties: [mongoose.Scheme.Types.ObjectId],
-  songs: [mongoose.Scheme.Types.ObjectId],
-  upvotes: [mongoose.Scheme.Types.ObjectId],
-  downvotes: [mongoose.Scheme.Types.ObjectId],
+  parties: [mongoose.Schema.Types.ObjectId],
+  songs: [mongoose.Schema.Types.ObjectId],
+  upvotes: [mongoose.Schema.Types.ObjectId],
+  downvotes: [mongoose.Schema.Types.ObjectId],
 });
 
 userSchema.methods.addParty = function (partyId) {

@@ -5,9 +5,9 @@ const partySchema = new mongoose.Schema({
   location: [Number],
   createdAt: Date,
 
-  owner: [mongoose.Scheme.Types.ObjectId],
-  pool: [mongoose.Scheme.Types.ObjectId],
-  queue: [mongoose.Scheme.Types.ObjectId],
+  owner: [mongoose.Schema.Types.ObjectId],
+  pool: [mongoose.Schema.Types.ObjectId],
+  queue: [mongoose.Schema.Types.ObjectId],
 });
 
 partySchema.methods.addSongToPool = function (songId) {

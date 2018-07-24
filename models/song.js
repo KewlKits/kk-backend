@@ -8,10 +8,10 @@ const songSchema = new mongoose.Schema({
   albumArtUrl: String,
   createdAt: Date,
 
-  party: mongoose.Scheme.Types.ObjectId,
-  owner: mongoose.Scheme.Types.ObjectId,
-  upvotedBy: [mongoose.Scheme.Types.ObjectId],
-  downvotedBy: [mongoose.Scheme.Types.ObjectId],
+  party: mongoose.Schema.Types.ObjectId,
+  owner: mongoose.Schema.Types.ObjectId,
+  upvotedBy: [mongoose.Schema.Types.ObjectId],
+  downvotedBy: [mongoose.Schema.Types.ObjectId],
 });
 
 songSchema.methods.addUpvote = function (userId) {
