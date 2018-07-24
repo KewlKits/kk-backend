@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Party = require('./models/party');
+const Song = require('./models/song');
+const User = require('./models/user');
 
 const app = express();
 
@@ -30,6 +32,8 @@ router.route('/party')
     party.name = req.body.name;
     party.location = [req.body.longitude, req.body.latitude];
     party.createdAt = new Date();
+
+    party.owner = mongoose.Types.ObjectId(req.body.owner);
 
     party.save((err) => {
       if (err) {
@@ -162,6 +166,16 @@ router.route('/party/:party_id/queue/move')
         }
         res.status(200).json(party);
       });
+    });
+  });
+
+  router.route('/user')
+  .get((req, res) => {
+    User.find((err, users) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(users);
     });
   });
 

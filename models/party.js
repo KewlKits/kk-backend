@@ -1,52 +1,25 @@
 const mongoose = require('mongoose');
 
-const songSchema = new mongoose.Schema({
-  uri: String,
-  title: String,
-  artist: String,
-  album: String,
-  albumArtUrl: String,
-  createdAt: Date,
-});
-
 const partySchema = new mongoose.Schema({
   name: String,
   location: [Number],
-  pool: [songSchema],
-  queue: [songSchema],
   createdAt: Date,
+
+  owner: [mongoose.Scheme.Types.ObjectId],
+  pool: [mongoose.Scheme.Types.ObjectId],
+  queue: [mongoose.Scheme.Types.ObjectId],
 });
 
-partySchema.methods.addSongToPool = function (uri, title, artist, album, albumArtUrl) {
-  // Only add if unique
-  if (!this.pool.map(song => song.uri).includes(uri)) {
-    this.pool.push({
-      uri,
-      title,
-      artist,
-      album,
-      albumArtUrl,
-      createdAt: new Date(),
-    });
-  }
+partySchema.methods.addSongToPool = function (songId) {
+  this.pool.push(songId);
 };
 
 partySchema.methods.removeSongFromPool = function (songId) {
   this.pool.remove(songId);
 };
 
-partySchema.methods.addSongToQueue = function (uri, title, artist, album, albumArtUrl) {
-  // Only add if unique
-  if (!this.queue.map(song => song.uri).includes(uri)) {
-    this.queue.push({
-      uri,
-      title,
-      artist,
-      album,
-      albumArtUrl,
-      createdAt: new Date(),
-    });
-  }
+partySchema.methods.addSongToQueue = function (songId) {
+  this.queue.push(songId);
 };
 
 partySchema.methods.removeSongFromQueue = function (songId) {
@@ -54,7 +27,7 @@ partySchema.methods.removeSongFromQueue = function (songId) {
 };
 
 partySchema.methods.moveSongToQueue = function (songId) {
-  this.queue.push(this.pool[this.pool.map(song => song._id.toString()).indexOf(songId)]);
+  this.queue.push(songId);
   this.pool.remove(songId);
 };
 
