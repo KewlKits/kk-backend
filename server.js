@@ -169,13 +169,25 @@ router.route('/party/:party_id/queue/move')
     });
   });
 
-  router.route('/user')
+router.route('/user')
   .get((req, res) => {
     User.find((err, users) => {
       if (err) {
         res.status(400).json({ error: err });
       }
       res.status(200).json(users);
+    });
+  })
+  .post((req, res) => {
+    const user = new User();
+    user.name = req.body.name;
+    user.score = 0;
+
+    user.save((err) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(user);
     });
   });
 
