@@ -248,6 +248,26 @@ router.route('/user')
     });
   });
 
+router.route('/song')
+  .get((req, res) => {
+    Song.find((err, songs) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(songs);
+    });
+  });
+
+router.route('/song/:song_id')
+  .get((req, res) => {
+    Song.findById(req.params.song_id, (err, song) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(song);
+    });
+  });
+
 app.use('/', router);
 
 app.listen(process.env.PORT);
