@@ -295,6 +295,33 @@ router.route('/song/:song_id/upvote')
     });
   });
 
+router.route('/song/:song_id/unupvote')
+  .put((req, res) => {
+    Song.findById(req.params.song_id, (err, song) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      song.removeUpvote(req.body.user_id);
+      song.save((songSaveErr) => {
+        if (songSaveErr) {
+          res.status(400).json({ error: songSaveErr });
+        }
+        User.findById(req.body.user_id, (userFindErr, user) => {
+          if (userFindErr) {
+            res.status(400).json({ error: userFindErr });
+          }
+          user.removeUpvote(req.params.song_id);
+          user.save((userSaveErr) => {
+            if (err) {
+              res.status(400).json({ error: userSaveErr });
+            }
+            res.status(200).json(song);
+          });
+        });
+      });
+    });
+  });
+
 router.route('/song/:song_id/downvote')
   .put((req, res) => {
     Song.findById(req.params.song_id, (err, song) => {
@@ -311,6 +338,33 @@ router.route('/song/:song_id/downvote')
             res.status(400).json({ error: userFindErr });
           }
           user.downvote(req.params.song_id);
+          user.save((userSaveErr) => {
+            if (err) {
+              res.status(400).json({ error: userSaveErr });
+            }
+            res.status(200).json(song);
+          });
+        });
+      });
+    });
+  });
+
+router.route('/song/:song_id/undownvote')
+  .put((req, res) => {
+    Song.findById(req.params.song_id, (err, song) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      song.removeDownvote(req.body.user_id);
+      song.save((songSaveErr) => {
+        if (songSaveErr) {
+          res.status(400).json({ error: songSaveErr });
+        }
+        User.findById(req.body.user_id, (userFindErr, user) => {
+          if (userFindErr) {
+            res.status(400).json({ error: userFindErr });
+          }
+          user.removeDownvote(req.params.song_id);
           user.save((userSaveErr) => {
             if (err) {
               res.status(400).json({ error: userSaveErr });

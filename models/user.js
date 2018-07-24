@@ -27,10 +27,12 @@ userSchema.methods.removeSong = function (songId) {
 };
 
 userSchema.methods.upvote = function (songId) {
-  this.upvotes.push(songId);
-
-  if (this.downvotes.includes(mongoose.Types.ObjectId(songId))) {
-    this.downvotes.remove(songId);
+  if (!this.upvotes.map(x => x.toString()).includes(songId)) {
+    this.upvotes.push(songId);
+    if (this.downvotes.map(x => x.toString()).includes(songId)) {
+      console.log('Removing upvote');
+      this.downvotes.remove(songId);
+    }
   }
 };
 
@@ -39,10 +41,12 @@ userSchema.methods.removeUpvote = function (songId) {
 };
 
 userSchema.methods.downvote = function (songId) {
-  this.downvotes.push(songId);
-
-  if (this.upvotes.includes(mongoose.Types.ObjectId(songId))) {
-    this.upvotes.remove(songId);
+  if (!this.downvotes.map(x => x.toString()).includes(songId)) {
+    this.downvotes.push(songId);
+    if (this.upvotes.map(x => x.toString()).includes(songId)) {
+      console.log('Removing upvote');
+      this.upvotes.remove(songId);
+    }
   }
 };
 

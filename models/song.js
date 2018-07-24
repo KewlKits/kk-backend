@@ -15,10 +15,12 @@ const songSchema = new mongoose.Schema({
 });
 
 songSchema.methods.addUpvote = function (userId) {
-  this.upvotedBy.push(userId);
-
-  if (this.downvotedBy.includes(mongoose.Types.ObjectId(userId))) {
-    this.downvotedBy.remove(userId);
+  if (!this.upvotedBy.map(x => x.toString()).includes(userId)) {
+    this.upvotedBy.push(userId);
+    if (this.downvotedBy.map(x => x.toString()).includes(userId)) {
+      console.log('Removing upvote');
+      this.downvotedBy.remove(userId);
+    }
   }
 };
 
