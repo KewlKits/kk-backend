@@ -17,7 +17,7 @@ const songSchema = new mongoose.Schema({
 songSchema.methods.addUpvote = function (userId) {
   this.upvotedBy.push(userId);
 
-  if (this.downvotedBy.includes(userId)) {
+  if (this.downvotedBy.includes(mongoose.Types.ObjectId(userId))) {
     this.downvotedBy.remove(userId);
   }
 };
@@ -28,7 +28,7 @@ songSchema.methods.removeUpvote = function (userId) {
 
 songSchema.methods.addDownvote = function (userId) {
   this.downvotedBy.push(userId);
-  if (this.upvotedBy.includes(userId)) {
+  if (this.upvotedBy.includes(mongoose.Types.ObjectId(userId))) {
     this.upvotedBy.remove(userId);
   }
 };
