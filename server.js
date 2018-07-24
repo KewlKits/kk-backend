@@ -69,15 +69,27 @@ router.route('/party/:party_id/pool/add')
       if (err) {
         res.status(400).json({ error: err });
       }
-      party.addSongToPool(
-        req.body.uri, req.body.title, req.body.artist, req.body.album, req.body.albumArtUrl,
-      );
+      const song = new Song();
+      song.uri = req.body.uri;
+      song.title = req.body.title;
+      song.artist = req.body.artist;
+      song.album = req.body.album;
+      song.albumArtUrl = req.body.albumArtUrl;
 
-      party.save((saveErr) => {
-        if (saveErr) {
-          res.status(400).json({ error: saveErr });
+      song.party = req.params.party_id;
+      song.owner = req.body.owner;
+
+      song.save((songSaveErr) => {
+        if (songSaveErr) {
+          res.status(400).json({ error: songSaveErr });
         }
-        res.status(200).json(party);
+        party.addSongToPool(song._id);
+        party.save((saveErr) => {
+          if (saveErr) {
+            res.status(400).json({ error: saveErr });
+          }
+          res.status(200).json(party);
+        });
       });
     });
   });

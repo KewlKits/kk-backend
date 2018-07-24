@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const partySchema = new mongoose.Schema({
   name: String,
   location: [Number],
+  playlistUri: String,
   createdAt: Date,
 
   owner: [mongoose.Schema.Types.ObjectId],
