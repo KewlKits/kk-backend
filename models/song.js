@@ -27,8 +27,10 @@ songSchema.methods.removeUpvote = function (userId) {
 };
 
 songSchema.methods.addDownvote = function (userId) {
+  console.log('Downvoting');
   this.downvotedBy.push(userId);
   if (this.upvotedBy.includes(mongoose.Types.ObjectId(userId))) {
+    console.log('Removing upvote');
     this.upvotedBy.remove(userId);
   }
 };
