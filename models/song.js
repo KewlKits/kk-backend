@@ -27,7 +27,7 @@ songSchema.methods.removeUpvote = function (userId) {
 };
 
 songSchema.methods.addDownvote = function (userId) {
-  if (this.downvotedBy.map(x => x.toString()).includes(userId)) {
+  if (!this.downvotedBy.map(x => x.toString()).includes(userId)) {
     this.downvotedBy.push(userId);
     if (this.upvotedBy.map(x => x.toString()).includes(userId)) {
       console.log('Removing upvote');
