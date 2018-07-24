@@ -6,7 +6,7 @@ const partySchema = new mongoose.Schema({
   playlistUri: String,
   createdAt: Date,
 
-  owner: [mongoose.Schema.Types.ObjectId],
+  owner: mongoose.Schema.Types.ObjectId,
   pool: [mongoose.Schema.Types.ObjectId],
   queue: [mongoose.Schema.Types.ObjectId],
 });
