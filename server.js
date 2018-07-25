@@ -303,6 +303,27 @@ router.route('/user')
       }
       res.status(200).json(user);
     });
+  })
+  .put((req, res) => {
+    User.findOne({ name: req.body.name }, (err, user) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        const newUser = new User();
+        newUser.name = req.body.name;
+        newUser.score = 0;
+
+        user.save((saveErr) => {
+          if (saveErr) {
+            res.status(400).json({ error: saveErr });
+          }
+          res.status(200).json(user);
+        });
+      }
+    });
   });
 
 router.route('/song')
