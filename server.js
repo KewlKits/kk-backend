@@ -316,7 +316,7 @@ router.route('/user')
         newUser.name = req.body.name;
         newUser.score = 0;
 
-        user.save((saveErr) => {
+        newUser.save((saveErr) => {
           if (saveErr) {
             res.status(400).json({ error: saveErr });
           }
