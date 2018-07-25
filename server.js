@@ -320,7 +320,7 @@ router.route('/user')
           if (saveErr) {
             res.status(400).json({ error: saveErr });
           }
-          res.status(200).json(user);
+          res.status(200).json(newUser);
         });
       }
     });
