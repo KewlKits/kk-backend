@@ -62,17 +62,73 @@ router.route('/party/:party_id')
       }
       res.status(200).json(party);
     });
+  })
+  .delete((req, res) => {
+
+    Party.remove({
+      _id: req.params.party_id,
+    }, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.queue.forEach((songId) => {
+        Song.remove({
+          _id: songId
+        }, (songDeleteErr, song) => {
+          if (songDeleteErr) {
+            res.status(400).json({ error: songDeleteErr });
+          }
+          User.findById(song.owner, (findUserErr, user) => {
+            if (findUserErr) {
+              res.status(400).json({ error: findUserErr });
+            }
+            user.removeSong(song._id);
+            user.removeUpvote(song._id);
+            user.removeDownvote(song._id);
+            user.save((userSaveErr) => {
+              if (userSaveErr) {
+                res.status(400).json({ error: userSaveErr });
+              }
+            });
+          });
+        });
+      });
+
+      party.pool.forEach((songId) => {
+        Song.remove({
+          _id: songId
+        }, (songDeleteErr, song) => {
+          if (songDeleteErr) {
+            res.status(400).json({ error: songDeleteErr });
+          }
+          User.findById(song.owner, (findUserErr, user) => {
+            if (findUserErr) {
+              res.status(400).json({ error: findUserErr });
+            }
+            user.removeSong(song._id);
+            user.removeUpvote(song._id);
+            user.removeDownvote(song._id);
+            user.save((userSaveErr) => {
+              if (userSaveErr) {
+                res.status(400).json({ error: userSaveErr });
+              }
+            });
+          });
+        });
+      });
+
+      User.findById(party.owner, (err, user) => {
+        user.removeParty(party._id);
+        user.save((userSaveErr) => {
+          if (userSaveErr) {
+            res.status(400).json({ error: userSaveErr });
+          }
+        });
+      });
+
+      res.status(200).json(party);
+    });
   });
-  // .delete((req, res) => {
-  //   Party.remove({
-  //     _id: req.params.party_id,
-  //   }, (err, party) => {
-  //     if (err) {
-  //       res.status(400).json({ error: err });
-  //     }
-  //     res.status(200).json(party);
-  //   });
-  // });
 
 router.route('/party/:party_id/pool/add')
   .put((req, res) => {
