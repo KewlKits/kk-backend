@@ -64,16 +64,13 @@ router.route('/party/:party_id')
     });
   })
   .delete((req, res) => {
-
-    Party.remove({
-      _id: req.params.party_id,
-    }, (err, party) => {
+    Party.findById(req.params.party_id, (err, party) => {
       if (err) {
         res.status(400).json({ error: err });
       }
       party.queue.forEach((songId) => {
         Song.remove({
-          _id: songId
+          _id: songId,
         }, (songDeleteErr, song) => {
           if (songDeleteErr) {
             res.status(400).json({ error: songDeleteErr });
@@ -96,7 +93,7 @@ router.route('/party/:party_id')
 
       party.pool.forEach((songId) => {
         Song.remove({
-          _id: songId
+          _id: songId,
         }, (songDeleteErr, song) => {
           if (songDeleteErr) {
             res.status(400).json({ error: songDeleteErr });
@@ -123,10 +120,13 @@ router.route('/party/:party_id')
           if (userSaveErr) {
             res.status(400).json({ error: userSaveErr });
           }
+          Party.remove({
+            _id: req.params.party_id,
+          }, (partyDeleteErr, deletedParty) => {
+            res.status(200).json(deletedParty);
+          });
         });
       });
-
-      res.status(200).json(party);
     });
   });
 
