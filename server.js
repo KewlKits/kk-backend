@@ -31,6 +31,7 @@ router.route('/party')
     const party = new Party();
     party.name = req.body.name;
     party.location = [req.body.longitude, req.body.latitude];
+    party.playlistUri = req.body.playlistUri;
     party.createdAt = new Date();
 
     party.owner = mongoose.Types.ObjectId(req.body.owner);
