@@ -294,6 +294,7 @@ router.route('/party/:party_id/queue/remove')
           console.log("ID: " + req.body.song_id);
           console.log("ERR: " + err);
           console.log("SONG: " + song);
+          console.log("UPVOTED BY: " + song.getUpvotedBy);
           // Delete pointer in owner
           User.findById(song.owner, (ownerFindErr, owner) => {
             owner.removeSong(req.body.song_id);

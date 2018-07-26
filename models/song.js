@@ -42,11 +42,11 @@ songSchema.methods.removeDownvote = function (userId) {
   this.downvotedBy.remove(userId);
 };
 
-songSchema.method.getUpvotedBy = function () {
+songSchema.methods.getUpvotedBy = function () {
   return this.upvotedBy;
 };
 
-songSchema.method.getDownvotedBy = function () {
+songSchema.methods.getDownvotedBy = function () {
   return this.downvotedBy;
 };
 module.exports = mongoose.model('Song', songSchema);
