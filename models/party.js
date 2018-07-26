@@ -33,10 +33,7 @@ partySchema.methods.moveSongToQueue = function (songId) {
 };
 
 partySchema.methods.moveSongInQueue = function (index, target) {
-  console.log("pre: " + this.queue);
   this.queue.splice(target, 0, this.queue.splice(index, 1)[0]);
-  console.log("post: " + this.queue);
-
 };
 
 module.exports = mongoose.model('Party', partySchema);
