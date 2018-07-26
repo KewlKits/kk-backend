@@ -290,9 +290,9 @@ router.route('/party/:party_id/queue/:song_id/remove')
         if (saveErr) {
           res.status(400).json({ error: saveErr });
         }
-        Song.findById(req.params.song_id, (songerr, song) => {
+        Song.findOne({ _id: req.params.song_id }, (err, song) => {
           console.log("ID: " + req.params.song_id);
-          console.log("ERR: " + songerr);
+          console.log("ERR: " + err);
           console.log("SONG: " + song);
           console.log("TITLE: " + song.title);
           console.log("UPVOTED BY: " + song.getUpvotedBy);
