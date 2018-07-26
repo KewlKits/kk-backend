@@ -298,7 +298,7 @@ router.route('/party/:party_id/queue/remove')
             owner.removeSong(req.body.song_id);
             owner.save();
           });
-
+   
           // Delete pointer in upvoters
           song.upvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (upvoterFindErr, upvoter) => {
@@ -306,7 +306,7 @@ router.route('/party/:party_id/queue/remove')
               upvoter.save();
             });
           });
-
+    
           // Delete pointers in downvoters
           song.downvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (downvoterFindErr, downvoter) => {
