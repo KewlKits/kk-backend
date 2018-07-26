@@ -92,73 +92,81 @@ router.route('/party/:party_id')
       }
       res.status(200).json(party);
     });
+  })
+  .delete((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      // Delete all songs in queue
+      party.queue.forEach((songId) => {
+        Song.findById(songId, (songFinderr, song) => {
+          // Delete pointer in owner
+          User.findById(song.owner, (ownerFindErr, owner) => {
+            owner.removeSong(songId);
+            owner.save();
+          });
+   
+          // Delete pointer in upvoters
+          song.upvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (upvoterFindErr, upvoter) => {
+              upvoter.removeUpvote(songId);
+              upvoter.save();
+            });
+          });
+    
+          // Delete pointers in downvoters
+          song.downvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (downvoterFindErr, downvoter) => {
+              downvoter.removeDownvote(songId);
+              downvoter.save();
+            });
+          });
+
+          Song.remove({ _id: songId }, (removeErr, song) => {
+          });
+        });
+      });
+
+      // Delete all songs in pool
+      party.pool.forEach((songId) => {
+        Song.findById(songId, (songFinderr, song) => {
+          // Delete pointer in owner
+          User.findById(song.owner, (ownerFindErr, owner) => {
+            owner.removeSong(songId);
+            owner.save();
+          });
+   
+          // Delete pointer in upvoters
+          song.upvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (upvoterFindErr, upvoter) => {
+              upvoter.removeUpvote(songId);
+              upvoter.save();
+            });
+          });
+    
+          // Delete pointers in downvoters
+          song.downvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (downvoterFindErr, downvoter) => {
+              downvoter.removeDownvote(songId);
+              downvoter.save();
+            });
+          });
+
+          Song.remove({ _id: songId }, (removeErr, song) => {
+          });
+        });
+      });
+
+      // Delete pointer in owner
+      User.findById(party.owner, (ownerFindErr, owner) => {
+        owner.removeParty(party._id);
+        owner.save((ownerSaveErr) => {
+          // Delete party
+          Party.remove({ _id: req.params.party_id }, (removeErr, deletedParty) => {
+            res.status(200).json(deletedParty);
+          });
+        });
+      });
+    });
   });
-  // .delete((req, res) => {
-  //   Party.findById(req.params.party_id, (err, party) => {
-  //     if (err) {
-  //       res.status(400).json({ error: err });
-  //     }
-  //     party.queue.forEach((songId) => {
-  //       Song.remove({
-  //         _id: songId,
-  //       }, (songDeleteErr, song) => {
-  //         if (songDeleteErr) {
-  //           res.status(400).json({ error: songDeleteErr });
-  //         }
-  //         User.findById(song.owner, (findUserErr, user) => {
-  //           if (findUserErr) {
-  //             res.status(400).json({ error: findUserErr });
-  //           }
-  //           user.removeSong(song._id);
-  //           user.removeUpvote(song._id);
-  //           user.removeDownvote(song._id);
-  //           user.save((userSaveErr) => {
-  //             if (userSaveErr) {
-  //               res.status(400).json({ error: userSaveErr });
-  //             }
-  //           });
-  //         });
-  //       });
-  //     });
-
-  //     party.pool.forEach((songId) => {
-  //       Song.remove({
-  //         _id: songId,
-  //       }, (songDeleteErr, song) => {
-  //         if (songDeleteErr) {
-  //           res.status(400).json({ error: songDeleteErr });
-  //         }
-  //         User.findById(song.owner, (findUserErr, user) => {
-  //           if (findUserErr) {
-  //             res.status(400).json({ error: findUserErr });
-  //           }
-  //           user.removeSong(song._id);
-  //           user.removeUpvote(song._id);
-  //           user.removeDownvote(song._id);
-  //           user.save((userSaveErr) => {
-  //             if (userSaveErr) {
-  //               res.status(400).json({ error: userSaveErr });
-  //             }
-  //           });
-  //         });
-  //       });
-  //     });
-
-  //     User.findById(party.owner, (err, user) => {
-  //       user.removeParty(party._id);
-  //       user.save((userSaveErr) => {
-  //         if (userSaveErr) {
-  //           res.status(400).json({ error: userSaveErr });
-  //         }
-  //         Party.remove({
-  //           _id: req.params.party_id,
-  //         }, (partyDeleteErr, deletedParty) => {
-  //           res.status(200).json(deletedParty);
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
 
 router.route('/party/:party_id/pool/add')
   .put((req, res) => {
@@ -202,22 +210,48 @@ router.route('/party/:party_id/pool/add')
     });
   });
 
-// router.route('/party/:party_id/pool/remove')
-//   .put((req, res) => {
-//     Party.findById(req.params.party_id, (err, party) => {
-//       if (err) {
-//         res.status(400).json({ error: err });
-//       }
-//       party.removeSongFromPool(req.body.song_id);
+router.route('/party/:party_id/pool/remove')
+  .put((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.removeSongFromPool(req.body.song_id);
 
-//       party.save((saveErr) => {
-//         if (saveErr) {
-//           res.status(400).json({ error: saveErr });
-//         }
-//         res.status(200).json(party);
-//       });
-//     });
-//   });
+      party.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        Song.findById(req.body.song_id, (songFinderr, song) => {
+          // Delete pointer in owner
+          User.findById(song.owner, (ownerFindErr, owner) => {
+            owner.removeSong(req.body.song_id);
+            owner.save();
+          });
+   
+          // Delete pointer in upvoters
+          song.upvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (upvoterFindErr, upvoter) => {
+              upvoter.removeUpvote(req.body.song_id);
+              upvoter.save();
+            });
+          });
+    
+          // Delete pointers in downvoters
+          song.downvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (downvoterFindErr, downvoter) => {
+              downvoter.removeDownvote(req.body.song_id);
+              downvoter.save();
+            });
+          });
+
+          Song.remove({ _id: req.body.song_id }, (removeErr, song) => {
+            res.status(200).json(party);
+          });
+        });
+      });
+    });
+  });
 
 router.route('/party/:party_id/pool')
   .put((req, res) => {
@@ -284,13 +318,13 @@ router.route('/party/:party_id/queue/remove')
       if (err) {
         res.status(400).json({ error: err });
       }
-      party.removeSongFromQueue(req.params.song_id);
+      party.removeSongFromQueue(req.body.song_id);
 
       party.save((saveErr) => {
         if (saveErr) {
           res.status(400).json({ error: saveErr });
         }
-        Song.findById(req.body.song_id, (err, song) => {
+        Song.findById(req.body.song_id, (songFinderr, song) => {
           // Delete pointer in owner
           User.findById(song.owner, (ownerFindErr, owner) => {
             owner.removeSong(req.body.song_id);
