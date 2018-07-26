@@ -278,34 +278,34 @@ router.route('/party/:party_id/queue/add')
     });
   });
 
-router.route('/party/:party_id/queue/remove')
+router.route('/party/:party_id/queue/:song_id/remove')
   .put((req, res) => {
     Party.findById(req.params.party_id, (err, party) => {
       if (err) {
         res.status(400).json({ error: err });
       }
-      party.removeSongFromQueue(req.body.song_id);
+      party.removeSongFromQueue(req.params.song_id);
 
       party.save((saveErr) => {
         if (saveErr) {
           res.status(400).json({ error: saveErr });
         }
-        Song.find({ _id: req.body.song_id }, (err, song) => {
-          console.log("ID: " + req.body.song_id);
+        Song.find({ _id: req.params.song_id }, (err, song) => {
+          console.log("ID: " + req.params.song_id);
           console.log("ERR: " + err);
           console.log("SONG: " + song);
           console.log("TITLE: " + song.title);
           console.log("UPVOTED BY: " + song.getUpvotedBy);
           // Delete pointer in owner
           User.findById(song.owner, (ownerFindErr, owner) => {
-            owner.removeSong(req.body.song_id);
+            owner.removeSong(req.params.song_id);
             owner.save();
           });
    
           // Delete pointer in upvoters
           song.getUpvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (upvoterFindErr, upvoter) => {
-              upvoter.removeUpvote(req.body.song_id);
+              upvoter.removeUpvote(req.params.song_id);
               upvoter.save();
             });
           });
@@ -313,13 +313,13 @@ router.route('/party/:party_id/queue/remove')
           // Delete pointers in downvoters
           song.getDownvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (downvoterFindErr, downvoter) => {
-              downvoter.removeDownvote(req.body.song_id);
+              downvoter.removeDownvote(req.params.song_id);
               downvoter.save();
             });
           });
         });
 
-        Song.remove({ _id: req.body.song_id }, (removeErr, song) => {
+        Song.remove({ _id: req.params.song_id }, (removeErr, song) => {
         });
         res.status(200).json(party);
       });
