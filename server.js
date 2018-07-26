@@ -295,7 +295,7 @@ router.route('/party/:party_id/queue/:song_id/remove')
           console.log("ERR: " + err);
           console.log("SONG: " + song);
           console.log("TITLE: " + song.title);
-          console.log("UPVOTED BY: " + song.getUpvotedBy);
+          console.log("UPVOTED BY: " + song.upvotedBy);
           // Delete pointer in owner
           User.findById(song.owner, (ownerFindErr, owner) => {
             owner.removeSong(req.params.song_id);
@@ -303,7 +303,7 @@ router.route('/party/:party_id/queue/:song_id/remove')
           });
    
           // Delete pointer in upvoters
-          song.getUpvotedBy.forEach((upvoterId) => {
+          song.upvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (upvoterFindErr, upvoter) => {
               upvoter.removeUpvote(req.params.song_id);
               upvoter.save();
@@ -311,7 +311,7 @@ router.route('/party/:party_id/queue/:song_id/remove')
           });
     
           // Delete pointers in downvoters
-          song.getDownvotedBy.forEach((upvoterId) => {
+          song.downvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (downvoterFindErr, downvoter) => {
               downvoter.removeDownvote(req.params.song_id);
               downvoter.save();
