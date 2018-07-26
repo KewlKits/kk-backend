@@ -291,11 +291,6 @@ router.route('/party/:party_id/queue/:song_id/remove')
           res.status(400).json({ error: saveErr });
         }
         Song.findById(req.params.song_id, (err, song) => {
-          console.log("ID: " + req.params.song_id);
-          console.log("ERR: " + err);
-          console.log("SONG: " + song);
-          console.log("TITLE: " + song.title);
-          console.log("UPVOTED BY: " + song.upvotedBy);
           // Delete pointer in owner
           User.findById(song.owner, (ownerFindErr, owner) => {
             owner.removeSong(req.params.song_id);
@@ -317,11 +312,11 @@ router.route('/party/:party_id/queue/:song_id/remove')
               downvoter.save();
             });
           });
+          
+          Song.remove({ _id: req.params.song_id }, (removeErr, song) => {
+            res.status(200).json(party);
+          });
         });
-
-        // Song.remove({ _id: req.params.song_id }, (removeErr, song) => {
-        // });
-        res.status(200).json(party);
       });
     });
   });
