@@ -290,7 +290,7 @@ router.route('/party/:party_id/queue/:song_id/remove')
         if (saveErr) {
           res.status(400).json({ error: saveErr });
         }
-        Song.findOne({ _id: req.params.song_id }, (err, song) => {
+        Song.findById(req.params.song_id, (err, song) => {
           console.log("ID: " + req.params.song_id);
           console.log("ERR: " + err);
           console.log("SONG: " + song);
@@ -319,8 +319,8 @@ router.route('/party/:party_id/queue/:song_id/remove')
           });
         });
 
-        Song.remove({ _id: req.params.song_id }, (removeErr, song) => {
-        });
+        // Song.remove({ _id: req.params.song_id }, (removeErr, song) => {
+        // });
         res.status(200).json(party);
       });
     });
