@@ -12,6 +12,35 @@ app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGODB_URI);
 
+const safelyDeleteSong = (songId) => {
+  Song.findById(songId, (err, song) => {
+    // Delete pointer in owner
+    User.findById(song.owner, (ownerFindErr, owner) => {
+      owner.removeSong(songId);
+      owner.save();
+    });
+
+    // Delete pointer in upvoters
+    song.upvotedBy.forEach((upvoterId) => {
+      User.findById(upvoterId, (upvoterFindErr, upvoter) => {
+        upvoter.removeUpvote(songId);
+        upvoter.save();
+      });
+    });
+
+    // Delete pointers in downvoters
+    song.downvotedBy.forEach((upvoterId) => {
+      User.findById(upvoterId, (downvoterFindErr, downvoter) => {
+        downvoter.removeDownvote(songId);
+        downvoter.save();
+      });
+    });
+  });
+
+  Song.remove({ _id: songId }, (removeErr, song) => {
+  });
+};
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -249,22 +278,50 @@ router.route('/party/:party_id/queue/add')
     });
   });
 
-// router.route('/party/:party_id/queue/remove')
-//   .put((req, res) => {
-//     Party.findById(req.params.party_id, (err, party) => {
-//       if (err) {
-//         res.status(400).json({ error: err });
-//       }
-//       party.removeSongFromQueue(req.body.song_id);
+router.route('/party/:party_id/queue/remove')
+  .put((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.removeSongFromQueue(req.body.song_id);
 
-//       party.save((saveErr) => {
-//         if (saveErr) {
-//           res.status(400).json({ error: saveErr });
-//         }
-//         res.status(200).json(party);
-//       });
-//     });
-//   });
+      party.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        Song.findById(req.body.song_id, (err, song) => {
+          // Delete pointer in owner
+          User.findById(song.owner, (ownerFindErr, owner) => {
+            owner.removeSong(req.body.song_id);
+            owner.save();
+          });
+      
+          // Delete pointer in upvoters
+          song.upvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (upvoterFindErr, upvoter) => {
+              upvoter.removeUpvote(req.body.song_id);
+              upvoter.save();
+            });
+          });
+      
+          // Delete pointers in downvoters
+          song.downvotedBy.forEach((upvoterId) => {
+            User.findById(upvoterId, (downvoterFindErr, downvoter) => {
+              downvoter.removeDownvote(req.body.song_id);
+              downvoter.save();
+            });
+          });
+        });
+      
+        Song.remove({ _id: req.body.song_id }, (removeErr, song) => {
+        });
+
+
+        res.status(200).json(party);
+      });
+    });
+  });
 
 router.route('/party/:party_id/queue/move')
   .put((req, res) => {
