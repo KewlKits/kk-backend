@@ -180,6 +180,7 @@ router.route('/party/:party_id/pool/add')
       song.artist = req.body.artist;
       song.album = req.body.album;
       song.albumArtUrl = req.body.albumArtUrl;
+      song.date = new Date();
 
       song.party = req.params.party_id;
       song.owner = req.body.owner;
@@ -282,6 +283,7 @@ router.route('/party/:party_id/queue/add')
       song.artist = req.body.artist;
       song.album = req.body.album;
       song.albumArtUrl = req.body.albumArtUrl;
+      song.date = new Date();
 
       song.party = req.params.party_id;
       song.owner = req.body.owner;
