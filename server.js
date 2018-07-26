@@ -278,7 +278,7 @@ router.route('/party/:party_id/queue/add')
     });
   });
 
-router.route('/party/:party_id/queue/:song_id/remove')
+router.route('/party/:party_id/queue/remove')
   .put((req, res) => {
     Party.findById(req.params.party_id, (err, party) => {
       if (err) {
@@ -290,17 +290,17 @@ router.route('/party/:party_id/queue/:song_id/remove')
         if (saveErr) {
           res.status(400).json({ error: saveErr });
         }
-        Song.findById(req.params.song_id, (err, song) => {
+        Song.findById(req.body.song_id, (err, song) => {
           // Delete pointer in owner
           User.findById(song.owner, (ownerFindErr, owner) => {
-            owner.removeSong(req.params.song_id);
+            owner.removeSong(req.body.song_id);
             owner.save();
           });
    
           // Delete pointer in upvoters
           song.upvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (upvoterFindErr, upvoter) => {
-              upvoter.removeUpvote(req.params.song_id);
+              upvoter.removeUpvote(req.body.song_id);
               upvoter.save();
             });
           });
@@ -308,12 +308,12 @@ router.route('/party/:party_id/queue/:song_id/remove')
           // Delete pointers in downvoters
           song.downvotedBy.forEach((upvoterId) => {
             User.findById(upvoterId, (downvoterFindErr, downvoter) => {
-              downvoter.removeDownvote(req.params.song_id);
+              downvoter.removeDownvote(req.body.song_id);
               downvoter.save();
             });
           });
-          
-          Song.remove({ _id: req.params.song_id }, (removeErr, song) => {
+
+          Song.remove({ _id: req.body.song_id }, (removeErr, song) => {
             res.status(200).json(party);
           });
         });
