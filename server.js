@@ -417,6 +417,17 @@ router.route('/user')
     });
   });
 
+router.route('/user/:user_id')
+  .get((req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(user);
+    });
+  });
+
+
 router.route('/song')
   .get((req, res) => {
     Song.find((err, songs) => {
