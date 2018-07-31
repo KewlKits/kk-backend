@@ -449,7 +449,7 @@ router.route('/song/:song_id')
   });
 
 router.route('/song/list')
-  .get((req, res) => {
+  .put((req, res) => {
     const query = req.body.songIds.map(songId => mongoose.Types.ObjectId(songId));
     Song.find({
       _id: { $in: query },
