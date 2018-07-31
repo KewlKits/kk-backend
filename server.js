@@ -427,6 +427,21 @@ router.route('/user/:user_id')
     });
   });
 
+router.route('/user/:user_id/score')
+  .put((req, res) => {
+    User.findById(req.params.user_id, (err, user) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      user.setScore(req.body.score);
+      user.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        res.status(200).json(user);
+      });
+    });
+  });
 
 router.route('/song')
   .get((req, res) => {
@@ -449,10 +464,11 @@ router.route('/song/:song_id')
   });
 
 router.route('/song/list')
-  .put((req, res) => {
-    const query = req.body.songIds.map(songId => mongoose.Types.ObjectId(songId));
+  .get((req, res) => {
+    const songIds = req.query.songs;
+    const mongoQuery = songIds.map(songId => mongoose.Types.ObjectId(songId));
     Song.find({
-      _id: { $in: query },
+      _id: { $in: mongoQuery },
     }, (err, songs) => {
       if (err) {
         res.status(400).json({ error: err });

@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
   downvotes: [mongoose.Schema.Types.ObjectId],
 });
 
+userSchema.methods.setScore = function (newScore) {
+  this.score = newScore;
+}
+
 userSchema.methods.addParty = function (partyId) {
   this.parties.push(partyId);
 };
