@@ -448,6 +448,19 @@ router.route('/song/:song_id')
     });
   });
 
+router.route('/song/list')
+  .get((req, res) => {
+    const query = req.body.songIds.map(songId => mongoose.Types.ObjectId(songId));
+    Song.find({
+      _id: { $in: query },
+    }, (err, songs) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      res.status(200).json(songs);
+    });
+  });
+
 router.route('/song/:song_id/upvote')
   .put((req, res) => {
     Song.findById(req.params.song_id, (err, song) => {
