@@ -464,14 +464,10 @@ router.route('/song/:song_id')
   });
 
 router.route('/song/list')
-  .get((req, res) => {
-    console.log('in');
-    console.log(req.query.songs);
-    const songIds = req.query.songs.split(',');
-    console.log(songIds);
-    const mongoQuery = songIds.map(songId => mongoose.Types.ObjectId(songId));
+  .put((req, res) => {
+    const query = req.body.songIds.map(songId => mongoose.Types.ObjectId(songId));
     Song.find({
-      _id: { $in: mongoQuery },
+      _id: { $in: query },
     }, (err, songs) => {
       if (err) {
         res.status(400).json({ error: err });
