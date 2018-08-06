@@ -168,6 +168,22 @@ router.route('/party/:party_id')
     });
   });
 
+router.route('/party/:party_id/nowPlaying')
+  .put((req, res) => {
+    Party.findById(req.params.party_id, (err, party) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
+      party.setNowPlaying(req.body.song_id);
+      party.save((saveErr) => {
+        if (saveErr) {
+          res.status(400).json({ error: saveErr });
+        }
+        res.status(200).json(party);
+      });
+    });
+  });
+
 router.route('/party/:party_id/pool/add')
   .put((req, res) => {
     Party.findById(req.params.party_id, (err, party) => {
