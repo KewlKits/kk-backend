@@ -9,7 +9,7 @@ const partySchema = new mongoose.Schema({
   owner: mongoose.Schema.Types.ObjectId,
   pool: [mongoose.Schema.Types.ObjectId],
   queue: [mongoose.Schema.Types.ObjectId],
-  nowPlaying: mongoose.Schema.Types.ObjectId,
+  nowPlaying: String,
 });
 
 partySchema.methods.addSongToPool = function (songId) {
@@ -37,8 +37,8 @@ partySchema.methods.moveSongInQueue = function (index, target) {
   this.queue.splice(target, 0, this.queue.splice(index, 1)[0]);
 };
 
-partySchema.methods.setNowPlaying = function (songId) {
-  this.nowPlaying = songId;
+partySchema.methods.setNowPlaying = function (spotifyUri) {
+  this.nowPlaying = spotifyUri;
 };
 
 module.exports = mongoose.model('Party', partySchema);
